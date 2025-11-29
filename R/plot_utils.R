@@ -6,6 +6,7 @@ library(here)
 library(ggrepel)
 library(GGally)
 library(DiagrammeR)
+library(ggridges)
 
 source("R/utils.R")
 

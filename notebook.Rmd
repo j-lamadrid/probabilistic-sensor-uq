@@ -1,29 +1,13 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output: pdf_document
 ---
-```{r}
-library(dplyr)
-library(ggplot2)
-library(here)
-library(ggrepel)
-library(ggridges)
-library(viridis)
-library(DiagrammeR)
 
+#### Setup
+```{r}
 source("R/utils.R")
 source("R/plot_utils.R")
 
-#compiled_model = stan_model(file = here("models", "peak_model.stan"))
-```
-
-```{r}
-data = readRDS(agg_names[1])
-print(data)
-cor(data$avg_evidence, data$mz_position)
-```
-
-```{r}
 agg_names = c(
   here("data", "processed", "BTY-1_agg.rds"),
   here("data", "processed", "FY6-1_agg.rds"),
@@ -42,6 +26,30 @@ raw_names = c(
   here("data", "raw", "ST003061", "JFH-1.mzML")
 )
 
+compiled_model = stan_model(file = here("models", "peak_model.stan"))
+```
+
+#### Data
+```{r}
+readRDS(agg_names[1])
+readRDS(agg_names[2])
+readRDS(agg_names[3])
+```
+
+#### Correlations
+```{r}
+data = readRDS(agg_names[1])
+
+print(paste("R2 vs Position:", cor(data$mz_r2, data$mz_position)))
+print(paste("Evidence vs Position:", cor(data$avg_evidence, data$mz_position)))
+```
+
+#### Plots
+```{r}
+plotGraph()
+```
+
+```{r}
 for (i in 1:3) {
   
   plotMSAgg(agg_names[i])
@@ -50,6 +58,12 @@ for (i in 1:3) {
   plotAmp(names[i])
 }
 ```
+
 ```{r}
-readRDS(agg_names[1])
+plotPPC(here("data", "processed", "BTY-2.rds"), here("data", "raw", "ST003061", "BTY-2.mzML"))
 ```
+
+```{r}
+plotPairs(here("data", "processed", "BTY-2.rds"), here("data", "raw", "ST003061", "BTY-2.mzML"), compiled_model)
+```
+
