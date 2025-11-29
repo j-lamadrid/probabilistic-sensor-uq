@@ -1,5 +1,3 @@
 # Porbabilistic Signal Extraction on Sparse Sensor Data
 
-#### Abstract
-
 Peak and noise estimation has been a common challenge in scientific signal analysis due to the necessity to confidently understand and define the points of interest in highly complex signals, particularly in the uncertainty quantification of sensor data. In this project, I propose an application of a Bayesian method for peak and noise estimation with temporal considerations representing comprehensive aggregate analysis and sensor validation. The framework for this applied approach follows techniques provided by Tokuda et al. which focuses on estimating noise variance and the number of peaks via Bayesian model selection and calculating the posterior density of each peak identified. However, for highly complex and massive spectra, complete spectra analysis and MCMC methods are computationally infeasible, instead requiring the exploration of strongly informed priors and Variational Bayes for this task. I apply these methods to real LC-MS recordings in this paper, but applications in neuroscience, cosmology, engineering, etc. exist as well.
