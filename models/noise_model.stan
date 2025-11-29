@@ -24,9 +24,6 @@ generated quantities {
   for (n in 1:N) {
     log_lik_sum += normal_lpdf(y[n] | baseline, epsilon);
   }
-
-  // 2. Calculate BIC
-  // Formula: k * ln(n) - 2 * log_likelihood
-  // k = 2 (baseline, epsilon)
+  
   bic = 2 * log(N) - 2 * log_lik_sum;
 }
