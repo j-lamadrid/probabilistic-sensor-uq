@@ -358,7 +358,7 @@ plotPairs <- function(processed_rds_path,
   features_obj <- loadMZML(raw_mzml_path, cultivar_name)
   
   target_row <- raw_df %>%
-    filter(model_r2 > 0.9) %>%
+    filter(model_r2 > 0.9, model_r2 < 0.95) %>%
     arrange(desc(model_amplitude_a)) %>%
     slice_head(n = 1)
   

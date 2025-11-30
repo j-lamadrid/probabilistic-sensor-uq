@@ -19,7 +19,7 @@ parameters {
   real<lower=0> baseline; 
   real<lower=0> a;       // amplitude
   real<lower=x_min, upper=x_max> mu; // m/z center
-  real<lower=0, upper=4000> rho;     // peak width
+  real<lower=0, upper=4000> rho;     // peak precision
   real<lower=0> epsilon; // noise
 }
   
@@ -30,7 +30,7 @@ model {
   baseline ~ lognormal(log(baseline_prior), 1.0);
   epsilon ~ lognormal(log(noise_prior), 1.0);
   
-  rho ~ lognormal(log(1000), 1.5);
+  rho ~ lognormal(log(1000), 1.0);
   
   vector[N] y_hat = baseline + a * exp(-0.5 * rho * square(x - mu));
   y ~ normal(y_hat, epsilon);

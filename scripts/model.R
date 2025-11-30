@@ -9,8 +9,8 @@ source(here("R", "utils.R"))
 
 
 
-CULTIVAR = "Jinfenghuang"
-FILEPATH = "C:/Users/jlama/Documents/bayesian-transient-modeling/data/raw/ST003061/JFH-1.mzML"  # adjust as needed
+CULTIVAR = "Bantianyao"
+FILEPATH = "C:/Users/jlama/Documents/probabilistic-sensor-uq/data/raw/ST003061/BTY-1.mzML"  # adjust as needed
 
 cat(sprintf("Loading data for %s from %s...\n", CULTIVAR, FILEPATH))
 if (!file.exists(FILEPATH)) stop("File not found!")
