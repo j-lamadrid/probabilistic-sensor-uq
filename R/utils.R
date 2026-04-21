@@ -5,6 +5,7 @@ library(e1071)
 library(progressr) 
 library(dplyr) 
 library(tidyr) 
+library(pracma) 
 
 register(SerialParam()) 
 
@@ -114,7 +115,9 @@ binData <- function(features, idx, bin_width = 0.015) {
   mz_vals = features$mz[[idx]]
   intensity_vals = features$intensities[[idx]]
   
-  keep_idx = intensity_vals > 0
+  # FIX: Safely ignore NAs so the if() statement doesn't crash
+  keep_idx = !is.na(intensity_vals) & intensity_vals > 0
+  
   if (sum(keep_idx) == 0) {
     return(data.frame(mz = numeric(0), intensity = numeric(0)))
   }
@@ -123,9 +126,7 @@ binData <- function(features, idx, bin_width = 0.015) {
   intensity_vals = intensity_vals[keep_idx]
   
   mz_binned = round(mz_vals / bin_width) * bin_width
-  
   temp_df = data.frame(mz = mz_binned, intensity = intensity_vals)
-  
   binned_spectra = aggregate(intensity ~ mz, data = temp_df, FUN = max)
   
   return(binned_spectra)
