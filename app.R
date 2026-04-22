@@ -2,16 +2,27 @@
 library(shiny)
 library(plotly)
 library(pracma)
+library(mzR)
+library(e1071)
+library(dplyr)
+library(tidyr)
 dt_installed <- requireNamespace("DT", quietly = TRUE)
 if (!dt_installed) message("Package 'DT' not installed; features tab will use a basic table.")
-library(dplyr)
 
 # ── 1 GB upload limit ──────────────────────────────────────────────────────────
+# 1 GB upload limit — mzR onDisk reads spectra one at a time so RAM usage
+# stays flat regardless of file size (typically ~100-300 MB regardless of
+# whether the file is 50 MB or 1 GB).
 options(shiny.maxRequestSize = 1024 * 1024 * 1024)
 
-# Source helper functions
-if (file.exists("R/utils.R"))   source("R/utils.R")
-if (file.exists("R/plot_3d.R")) source("R/plot_3d.R")
+# R/utils.R and R/plot_3d.R are auto-sourced by shinyapps.io before app.R runs.
+# The explicit source() calls below are ONLY for local development where
+# shinyapps.io auto-source doesn't apply.
+local({
+  for (f in c("R/utils.R", "R/plot_3d.R")) {
+    if (file.exists(f)) source(f, local = FALSE)
+  }
+})
 
 # list available processed RDS files (if any)
 processed_files <- character(0)
@@ -447,8 +458,13 @@ server <- function(input, output, session) {
     file.rename(fileinfo$datapath, mzml_path)
     mzml_name <- fileinfo$name
 
-    if (!exists("loadMZML") || !exists("binData") || !exists("findRegions") || !exists("generatePlotsFromFeatures")) {
-      status_msg("ERROR: HELPER FUNCTIONS NOT FOUND. CHECK R/utils.R AND R/plot_3d.R")
+    # Verify required functions are available
+    required <- c("loadMZML", "binData", "findRegions",
+                  "generatePlotsFromFeatures", "groupPeaks")
+    missing  <- required[!vapply(required, exists, logical(1), envir = globalenv())]
+    if (length(missing) > 0) {
+      status_msg(paste("ERROR: Missing functions:", paste(missing, collapse = ", "),
+        "\nR/utils.R and R/plot_3d.R must be in the R/ folder of the project."))
       return(NULL)
     }
 
@@ -554,6 +570,8 @@ server <- function(input, output, session) {
       }
       status_msg(final_status)
       incProgress(0.25)
+      rm(features_obj)  # free raw spectra — plots + agg table are all we keep
+      gc()
     })
   })
 

@@ -1,3 +1,6 @@
-renv.lock
 .RData
 .RDataTmp
+scripts/
+data/raw/ST003061/
+figures/
+data/raw/lightkurve/
