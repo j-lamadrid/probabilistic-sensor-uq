@@ -136,7 +136,19 @@ Pre-processed aggregate results (`.rds` files) are included in `data/processed/`
 
 ## References
 
-Tokuda, T., Yoshida, K., Shimizu, H., & Okada, M. (2017). *Bayesian Estimation of the Number of Peaks in NMR Spectra*. PLOS ONE.
+S. Tokuda, et al., "Simultaneous Estimation of Noise Variance and Number of Peaks in Bayesian Spectral Deconvolution," *Journal of the Physical Society of Japan*, vol. 86, no. 2, p. 024001, 2016. DOI: [10.7566/jpsj.86.024001](https://doi.org/10.7566/jpsj.86.024001)
+
+Metabolomics Workbench, Project ID PR001907. Available at [metabolomicsworkbench.org](https://www.metabolomicsworkbench.org). DOI: [10.21228/M8714X](https://doi.org/10.21228/M8714X)
+
+V. Mazet, et al., "Unsupervised Joint Decomposition of a Spectroscopic Signal Sequence," *Signal Processing*, vol. 109, pp. 193–205, 2014. DOI: [10.1016/j.sigpro.2014.10.032](https://doi.org/10.1016/j.sigpro.2014.10.032)
+
+G. C. Allen and R. F. McMeeking, "Deconvolution of Spectra by Least-Squares Fitting," *Analytica Chimica Acta*, vol. 103, no. 1, pp. 73–108, 1978.
+
+H. Sayama, "Mean-Field Approximation," in *Introduction to the Modeling and Analysis of Complex Systems*. Available at [math.libretexts.org](https://math.libretexts.org/)
+
+P. Miketova, et al., "Tandem Mass Spectrometry Studies of Green Tea Catechins," *Journal of Mass Spectrometry*, vol. 35, no. 7, pp. 860–869, 2000.
+
+W. Shao and H. Lam, "Denoising Peptide Tandem Mass Spectra for Spectral Libraries: A Bayesian Approach," *Journal of Proteome Research*, vol. 12, no. 7, pp. 3223–3232, 2013. DOI: [10.1021/pr400080b](https://doi.org/10.1021/pr400080b)
 
 ---
 
