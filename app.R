@@ -33,6 +33,9 @@ if (dir.exists(proc_dir)) {
 processed_choices <- if (length(processed_files) > 0)
   setNames(processed_files, basename(processed_files)) else NULL
 
+demo_mzml_path <- file.path("data", "raw", "demo", "demo_lcms.mzML")
+demo_available <- file.exists(demo_mzml_path)
+
 # ── Aggregate per-spectrum peak rows into _agg style summary ──────────────────
 # Mirrors the groupPeaks + summarize pipeline in model.R.
 # Input:  per-spectrum data.frame with columns:
@@ -378,53 +381,76 @@ retro_css <- "
 
 # ── UI ─────────────────────────────────────────────────────────────────────────
 tabs_list <- list(
-  tabPanel(">> 2D (FINGERPRINT)", plotlyOutput("plot2d", height = "680px")),
-  tabPanel(">> 3D (TEMPORAL)", plotlyOutput("plot3d", height = "680px"))
+  tabPanel("2D Fingerprint", plotlyOutput("plot2d", height = "680px")),
+  tabPanel("3D Temporal", plotlyOutput("plot3d", height = "680px"))
 )
 if (dt_installed) {
-  tabs_list[[length(tabs_list) + 1]] <- tabPanel(">> FEATURES", DT::DTOutput("features_table"))
+  tabs_list[[length(tabs_list) + 1]] <- tabPanel("Features", DT::DTOutput("features_table"))
 } else {
-  tabs_list[[length(tabs_list) + 1]] <- tabPanel(">> FEATURES", tableOutput("features_table_base"))
+  tabs_list[[length(tabs_list) + 1]] <- tabPanel("Features", tableOutput("features_table_base"))
 }
-tabs_list[[length(tabs_list) + 1]] <- tabPanel(">> STATUS", verbatimTextOutput("status"))
+tabs_list[[length(tabs_list) + 1]] <- tabPanel("Status", verbatimTextOutput("status"))
+
+demo_button <- actionButton(
+  "run_demo",
+  if (demo_available) "Run bundled demo" else "Demo unavailable",
+  class = if (demo_available) "btn-demo" else "btn-demo disabled",
+  disabled = if (!demo_available) "disabled" else NULL
+)
 
 ui <- fluidPage(
-  tags$head(tags$style(HTML(retro_css))),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "app-theme.css")),
 
-  titlePanel(
-    tags$span(
-      style = "font-family:'Press Start 2P',monospace; font-size:12px;
-               color:#00ff41; text-shadow:0 0 10px #00ff41, 0 0 25px #00ff41;
-               letter-spacing:3px;",
-      "▌LC-MS ANALYZER▐"
-    )
-  ),
-
-  sidebarLayout(
-    sidebarPanel(
-      width = 3,
+  tags$main(
+    class = "app-shell",
+    tags$section(
+      class = "app-hero",
       tags$div(
-        style = "font-family:'Press Start 2P',monospace; font-size:6px;
-                 color:#000; background:#00ff41; display:inline-block;
-                 padding:3px 6px; margin-bottom:10px; letter-spacing:1px;",
-        "MAX: 1 GB"
+        tags$span(class = "section-kicker", "Probabilistic Sensor UQ"),
+        tags$h1("LC-MS Signal Explorer"),
+        tags$p("Bayesian peak detection and temporal visualization for sparse LC-MS sensor data.")
       ),
-      fileInput("mzml", "UPLOAD .mzML FILE", accept = c('.mzML', '.mzML.gz')),
-      tags$hr(),
-      numericInput("bin_width",   "M/Z BIN WIDTH",          value = 0.01, step = 0.001),
-      numericInput("max_spectra", "MAX SPECTRA TO PROCESS", value = 200,  min = 1),
-      numericInput("window_size", "PEAK WINDOW SIZE (M/Z)", value = 0.8,  step = 0.1),
-      numericInput("mz_tolerance","MZ GROUP TOLERANCE",     value = 0.05, step = 0.005),
-      checkboxInput("log_scale",  "LOG INTENSITY (LOG1P)",  value = FALSE),
-      tags$div(style = "margin-top:14px;"),
-      actionButton("analyze", "[ ANALYZE ]"),
-      tags$hr(),
-      selectInput("processed_rds", "SELECT PROCESSED RDS",
-                  choices = processed_choices, selected = NULL),
-      helpText("LOAD .mzML + ANALYZE, OR SELECT A PRE-PROCESSED RDS.")
+      tags$div(
+        class = "hero-meta",
+        tags$span("mzML up to 1 GB"),
+        tags$span("Bundled demo"),
+        tags$span("2D and 3D views")
+      )
     ),
 
-    mainPanel(do.call(tabsetPanel, tabs_list))
+    sidebarLayout(
+      sidebarPanel(
+        width = 3,
+        tags$div(
+          class = "sidebar-title-row",
+          tags$span(class = "section-kicker", "Input"),
+          tags$span(
+            class = if (demo_available) "demo-status available" else "demo-status unavailable",
+            if (demo_available) "Demo ready" else "Demo missing"
+          )
+        ),
+        fileInput("mzml", "Upload .mzML file", accept = c(".mzML", ".mzML.gz")),
+        tags$div(
+          class = "action-stack",
+          demo_button,
+          actionButton("analyze", "Analyze upload", class = "btn-primary")
+        ),
+        tags$hr(),
+        numericInput("bin_width", "m/z bin width", value = 0.01, step = 0.001),
+        numericInput("max_spectra", "Max spectra to process", value = 200, min = 1),
+        numericInput("window_size", "Peak window size (m/z)", value = 0.8, step = 0.1),
+        numericInput("mz_tolerance", "m/z group tolerance", value = 0.05, step = 0.005),
+        checkboxInput("log_scale", "Log intensity (log1p)", value = FALSE),
+        tags$hr(),
+        selectInput("processed_rds", "Processed RDS", choices = processed_choices, selected = NULL),
+        helpText("Use the bundled demo, upload mzML, or inspect a pre-processed RDS table.")
+      ),
+
+      mainPanel(
+        width = 9,
+        tags$div(class = "app-visual-panel", do.call(tabsetPanel, tabs_list))
+      )
+    )
   )
 )
 
@@ -450,14 +476,8 @@ server <- function(input, output, session) {
     }
   }, ignoreNULL = TRUE)
 
-  # ── Analyze button ──────────────────────────────────────────────────────────
-  observeEvent(input$analyze, {
-    req(input$mzml)
-    fileinfo  <- input$mzml
-    mzml_path <- paste0(fileinfo$datapath, ".mzML")
-    file.rename(fileinfo$datapath, mzml_path)
-    mzml_name <- fileinfo$name
-
+  # Shared mzML analysis path for uploads and the packaged demo.
+  run_mzml_analysis <- function(mzml_path, mzml_name) {
     # Verify required functions are available
     required <- c("loadMZML", "binData", "findRegions",
                   "generatePlotsFromFeatures", "groupPeaks")
@@ -573,29 +593,47 @@ server <- function(input, output, session) {
       rm(features_obj)  # free raw spectra — plots + agg table are all we keep
       gc()
     })
-  })
+  }
+
+  observeEvent(input$run_demo, {
+    if (!demo_available || !file.exists(demo_mzml_path)) {
+      status_msg("DEMO FILE NOT FOUND IN APP RUNTIME")
+      return(NULL)
+    }
+    run_mzml_analysis(demo_mzml_path, basename(demo_mzml_path))
+  }, ignoreInit = TRUE)
+
+  observeEvent(input$analyze, {
+    req(input$mzml)
+    fileinfo <- input$mzml
+    mzml_path <- paste0(fileinfo$datapath, ".mzML")
+    if (!file.rename(fileinfo$datapath, mzml_path)) {
+      file.copy(fileinfo$datapath, mzml_path, overwrite = TRUE)
+    }
+    run_mzml_analysis(mzml_path, fileinfo$name)
+  }, ignoreInit = TRUE)
 
   # ── Render 2D Plot ──────────────────────────────────────────────────────────
   output$plot2d <- renderPlotly({
     p <- current_plot_2d()
     empty_layout <- list(
-      paper_bgcolor = "#242424", plot_bgcolor  = "#242424",
-      font          = list(color = "#00ff41", family = "monospace"),
-      xaxis         = list(title = "M/Z",       color = "#00ff41", gridcolor = "#1a3a1a"),
-      yaxis         = list(title = "INTENSITY", color = "#00ff41", gridcolor = "#1a3a1a")
+      paper_bgcolor = "#15100d", plot_bgcolor = "#15100d",
+      font          = list(color = "#fffaf1", family = "Segoe UI, sans-serif"),
+      xaxis         = list(title = "m/z", color = "#f5efe4", gridcolor = "rgba(222,184,131,0.16)", zerolinecolor = "rgba(222,184,131,0.22)"),
+      yaxis         = list(title = "Intensity", color = "#f5efe4", gridcolor = "rgba(222,184,131,0.16)", zerolinecolor = "rgba(222,184,131,0.22)")
     )
     
-    apply_retro_layout <- function(plt, extra_args = list()) {
+    apply_portfolio_layout <- function(plt, extra_args = list()) {
       do.call(plotly::layout, c(list(plt), empty_layout, extra_args))
     }
     
     if (is.null(p)) {
-      apply_retro_layout(
+      apply_portfolio_layout(
         plotly::plot_ly(type = "scatter", mode = "lines"), 
-        list(title = list(text = "UPLOAD AN mzML FILE AND CLICK [ ANALYZE ]", font = list(family = "monospace", color = "#00ff41", size = 14)))
+        list(title = list(text = "Upload an mzML file or run the bundled demo", font = list(family = "Segoe UI, sans-serif", color = "#d8ad86", size = 15)))
       )
     } else {
-      apply_retro_layout(p)
+      apply_portfolio_layout(p)
     }
   })
 
@@ -603,27 +641,27 @@ server <- function(input, output, session) {
   output$plot3d <- renderPlotly({
     p <- current_plot_3d()
     empty_layout <- list(
-      paper_bgcolor = "#242424", plot_bgcolor  = "#242424",
-      font          = list(color = "#00ff41", family = "monospace"),
+      paper_bgcolor = "#15100d", plot_bgcolor = "#15100d",
+      font          = list(color = "#fffaf1", family = "Segoe UI, sans-serif"),
       scene = list(
-        bgcolor = "#242424",
-        xaxis   = list(title = "M/Z",       color = "#00ff41", gridcolor = "#1a3a1a"),
-        yaxis   = list(title = "TIME (RT)", color = "#00ff41", gridcolor = "#1a3a1a"),
-        zaxis   = list(title = "INTENSITY", color = "#00ff41", gridcolor = "#1a3a1a")
+        bgcolor = "#15100d",
+        xaxis   = list(title = "m/z", color = "#f5efe4", gridcolor = "rgba(222,184,131,0.18)", zerolinecolor = "rgba(222,184,131,0.22)"),
+        yaxis   = list(title = "Time (RT)", color = "#f5efe4", gridcolor = "rgba(222,184,131,0.18)", zerolinecolor = "rgba(222,184,131,0.22)"),
+        zaxis   = list(title = "Intensity", color = "#f5efe4", gridcolor = "rgba(222,184,131,0.18)", zerolinecolor = "rgba(222,184,131,0.22)")
       )
     )
     
-    apply_retro_layout <- function(plt, extra_args = list()) {
+    apply_portfolio_layout <- function(plt, extra_args = list()) {
       do.call(plotly::layout, c(list(plt), empty_layout, extra_args))
     }
     
     if (is.null(p)) {
-      apply_retro_layout(
+      apply_portfolio_layout(
         plotly::plot_ly(type = "scatter3d", mode = "lines"),
-        list(title = list(text = "UPLOAD AN mzML FILE AND CLICK [ ANALYZE ]", font = list(family = "monospace", color = "#00ff41", size = 14)))
+        list(title = list(text = "Upload an mzML file or run the bundled demo", font = list(family = "Segoe UI, sans-serif", color = "#d8ad86", size = 15)))
       )
     } else {
-      apply_retro_layout(p)
+      apply_portfolio_layout(p)
     }
   })
 
@@ -652,7 +690,7 @@ server <- function(input, output, session) {
           scrollY    = "450px",
           initComplete = DT::JS(
             "function(settings,json){",
-            "  $(this.api().table().header()).css({'background-color':'#0a1a0a','color':'#00ff41'});",
+            "  $(this.api().table().header()).css({'background-color':'rgba(32,23,12,0.96)','color':'#d8ad86'});",
             "}"
           )
         )

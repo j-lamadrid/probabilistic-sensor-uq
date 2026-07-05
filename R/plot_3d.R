@@ -49,7 +49,7 @@ generatePlotsFromFeatures <- function(features,
   if (!requireNamespace("plotly", quietly = TRUE))
     stop("Please install the 'plotly' package.")
 
-  col_pal <- if (requireNamespace("viridis", quietly = TRUE)) viridis::viridis(256) else NULL
+  col_pal <- grDevices::colorRampPalette(c("#3a2019", "#d8ad86", "#d85cff", "#a0ffd6"))(256)
 
   # --- 1. GENERATE 2D PROFILE PLOT ---
   df_profile <- aggregate(intensity ~ mz, data = df_long, FUN = max)
@@ -61,7 +61,7 @@ generatePlotsFromFeatures <- function(features,
     y      = ~intensity,
     type   = "scatter",
     mode   = "lines",
-    line   = list(color = "#00ff41", width = 1.5)
+    line   = list(color = "#d8ad86", width = 1.8)
   ) %>%
     plotly::layout(
       xaxis = list(title = "m/z"),

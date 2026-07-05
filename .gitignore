@@ -4,4 +4,6 @@
 .RDataTmp
 .Ruserdata
 notebook.nb.html
-data/raw/
+data/raw/*
+!data/raw/demo/
+!data/raw/demo/**

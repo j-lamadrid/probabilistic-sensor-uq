@@ -1,0 +1,529 @@
+html {
+  --section-background-color: linear-gradient(
+    to bottom left,
+    rgba(17, 16, 16, 0.582),
+    rgba(24, 18, 8, 0.904)
+  );
+  --image-gradient: linear-gradient(
+    to bottom left,
+    rgba(17, 16, 16, 0.678),
+    rgba(22, 19, 10, 0.863)
+  );
+  --imp-text-color: #d8ad86;
+  --surface-color: rgba(38, 30, 20, 0.72);
+  --surface-strong: rgba(32, 23, 12, 0.9);
+  --surface-soft: rgba(255, 244, 222, 0.06);
+  --border-color: rgba(222, 184, 131, 0.24);
+  --muted-text: rgba(245, 239, 228, 0.76);
+  --cool-accent: #d85cff;
+  --text-color: rgba(255, 250, 241, 0.96);
+  --page-bg: #120e08;
+  --shadow-color: rgba(0, 0, 0, 0.28);
+  --focus-ring: rgba(216, 92, 255, 0.24);
+}
+
+html,
+body {
+  background:
+    radial-gradient(circle at 86% 8%, rgba(216, 92, 255, 0.13), transparent 30%),
+    radial-gradient(circle at 12% 0%, rgba(222, 184, 131, 0.16), transparent 28%),
+    var(--section-background-color),
+    var(--page-bg) !important;
+  color: var(--text-color) !important;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 16px;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+button:focus,
+.btn:focus,
+.form-control:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #503719;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(222, 184, 131, 0.959);
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(235, 169, 130, 0.911);
+}
+
+.container-fluid {
+  max-width: 1540px;
+  padding: clamp(18px, 3vw, 42px) !important;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.app-hero {
+  align-items: end;
+  background:
+    linear-gradient(145deg, rgba(255, 250, 241, 0.08), transparent 22%),
+    rgba(18, 10, 16, 0.74);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 22px 55px var(--shadow-color);
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-bottom: 1.25rem;
+  padding: clamp(1rem, 2.5vw, 1.65rem);
+}
+
+.section-kicker,
+.control-label,
+label {
+  color: var(--imp-text-color) !important;
+  font-size: 0.74rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-hero h1 {
+  color: white;
+  font-size: clamp(2.15rem, 4.2vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin: 0.3rem 0 0;
+}
+
+.app-hero p {
+  color: var(--muted-text);
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin: 0.75rem 0 0;
+  max-width: 760px;
+}
+
+.hero-meta {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: end;
+}
+
+.hero-meta span,
+.demo-status {
+  background: var(--surface-soft);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--muted-text);
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  padding: 0.45rem 0.65rem;
+  text-transform: uppercase;
+}
+
+.hero-meta span:first-child,
+.demo-status.available {
+  border-color: rgba(216, 92, 255, 0.52);
+  color: rgba(255, 250, 241, 0.94);
+}
+
+.demo-status.unavailable {
+  color: rgba(255, 250, 241, 0.5);
+}
+
+.app-layout {
+  margin-top: 0;
+}
+
+.well {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 241, 0.06), transparent 18%),
+    var(--surface-color) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 18px 42px var(--shadow-color) !important;
+  color: var(--text-color) !important;
+  padding: 1rem !important;
+}
+
+.sidebar-title-row {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control,
+input[type="number"],
+input[type="text"],
+select {
+  background: rgba(0, 0, 0, 0.24) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  color: var(--text-color) !important;
+  font-size: 0.96rem !important;
+  min-height: 38px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+}
+
+.form-control:focus,
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  background: rgba(0, 0, 0, 0.32) !important;
+  border-color: rgba(216, 92, 255, 0.58) !important;
+  box-shadow: 0 0 0 3px var(--focus-ring) !important;
+}
+
+.input-group .form-control[readonly] {
+  color: var(--muted-text) !important;
+}
+
+.btn,
+.btn-default {
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  color: white !important;
+  font-weight: 800 !important;
+  letter-spacing: 0;
+  min-height: 38px;
+  transition: background-color 0.24s ease, border-color 0.24s ease, color 0.24s ease, transform 0.24s ease;
+}
+
+.btn:hover,
+.btn-default:hover,
+.btn:focus,
+.btn-default:focus {
+  background: rgba(216, 92, 255, 0.13) !important;
+  border-color: rgba(216, 92, 255, 0.56) !important;
+  color: white !important;
+  transform: translateY(-1px);
+}
+
+.btn-primary,
+.btn-primary:focus {
+  background: #866d36 !important;
+  border-color: #a98b4e !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background: #9f8858 !important;
+  border-color: #c4a15e !important;
+}
+
+.btn-file {
+  background: rgba(216, 92, 255, 0.12) !important;
+  border-color: rgba(216, 92, 255, 0.42) !important;
+}
+
+.btn-file:hover {
+  background: rgba(216, 92, 255, 0.2) !important;
+}
+
+.action-stack {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: 1fr;
+  margin-top: 0.65rem;
+}
+
+.action-stack .btn {
+  width: 100%;
+}
+
+#run_demo {
+  background:
+    linear-gradient(180deg, rgba(216, 92, 255, 0.2), rgba(255, 250, 241, 0.04)),
+    rgba(31, 24, 38, 0.94) !important;
+  border-color: rgba(216, 92, 255, 0.48) !important;
+}
+
+#run_demo:hover {
+  border-color: rgba(216, 92, 255, 0.72) !important;
+}
+
+#run_demo.disabled,
+#run_demo:disabled {
+  color: rgba(255, 250, 241, 0.42) !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+hr {
+  border-top: 1px solid rgba(255, 250, 241, 0.12) !important;
+  margin: 1rem 0 !important;
+}
+
+.help-block {
+  color: var(--muted-text) !important;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.checkbox label {
+  align-items: center;
+  color: var(--muted-text) !important;
+  display: flex;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  gap: 0.45rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--cool-accent);
+  height: 16px;
+  margin-top: 0 !important;
+  width: 16px;
+}
+
+.app-visual-panel {
+  background:
+    linear-gradient(145deg, rgba(255, 250, 241, 0.08), transparent 20%),
+    rgba(18, 10, 16, 0.82);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 18px 42px var(--shadow-color);
+  min-height: 760px;
+  padding: 1rem;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid rgba(255, 250, 241, 0.13) !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.nav-tabs > li {
+  margin-bottom: 0 !important;
+}
+
+.nav-tabs > li > a {
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  color: var(--muted-text) !important;
+  font-weight: 800;
+  margin-right: 0 !important;
+  padding: 0.72rem 0.95rem !important;
+  transition: background-color 0.24s ease, border-color 0.24s ease, color 0.24s ease, transform 0.24s ease;
+}
+
+.nav-tabs > li > a:hover {
+  background: rgba(216, 92, 255, 0.11) !important;
+  border-color: rgba(216, 92, 255, 0.46) !important;
+  color: white !important;
+  transform: translateY(-1px);
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  background: rgba(216, 92, 255, 0.16) !important;
+  border-color: rgba(216, 92, 255, 0.64) !important;
+  color: white !important;
+}
+
+.tab-content {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.js-plotly-plot,
+.plot-container {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 1px solid rgba(255, 250, 241, 0.12) !important;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress {
+  background: rgba(0, 0, 0, 0.32) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 999px !important;
+  height: 12px !important;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--imp-text-color), var(--cool-accent)) !important;
+  box-shadow: 0 0 16px rgba(216, 92, 255, 0.22);
+}
+
+pre {
+  background: rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid rgba(255, 250, 241, 0.12) !important;
+  border-radius: 8px !important;
+  color: rgba(209, 255, 232, 0.76) !important;
+  font-family: "Courier New", monospace !important;
+  font-size: 0.92rem !important;
+  line-height: 1.6;
+  min-height: 160px;
+  padding: 1rem !important;
+  white-space: pre-wrap;
+}
+
+.dataTables_wrapper {
+  color: var(--muted-text) !important;
+}
+
+table.dataTable {
+  background: rgba(0, 0, 0, 0.24) !important;
+  border: 1px solid rgba(255, 250, 241, 0.12) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+table.dataTable thead th {
+  background: rgba(32, 23, 12, 0.96) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--imp-text-color) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.06em;
+  padding: 0.7rem 0.6rem !important;
+  text-transform: uppercase;
+}
+
+table.dataTable tbody tr,
+table.dataTable tbody tr.odd,
+table.dataTable tbody tr.even {
+  background: rgba(0, 0, 0, 0.16) !important;
+  color: var(--text-color) !important;
+}
+
+table.dataTable tbody tr:hover {
+  background: rgba(216, 92, 255, 0.1) !important;
+}
+
+table.dataTable tbody td {
+  border-top: 1px solid rgba(255, 250, 241, 0.08) !important;
+  padding: 0.48rem 0.6rem !important;
+}
+
+.dataTables_filter input,
+.dataTables_length select {
+  background: rgba(0, 0, 0, 0.24) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  color: var(--text-color) !important;
+}
+
+.dataTables_info,
+.dataTables_length label,
+.dataTables_filter label {
+  color: var(--muted-text) !important;
+  font-size: 0.86rem !important;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.dataTables_paginate .paginate_button {
+  background: var(--surface-soft) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  color: var(--muted-text) !important;
+  margin: 0 0.12rem !important;
+}
+
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button:hover {
+  background: rgba(216, 92, 255, 0.14) !important;
+  border-color: rgba(216, 92, 255, 0.56) !important;
+  color: white !important;
+}
+
+.selectize-control .selectize-input {
+  background: rgba(0, 0, 0, 0.24) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  color: var(--text-color) !important;
+  min-height: 38px;
+}
+
+.selectize-control.single .selectize-input::after {
+  border-color: var(--imp-text-color) transparent transparent transparent !important;
+}
+
+.selectize-input input {
+  color: var(--text-color) !important;
+}
+
+.selectize-dropdown {
+  background: rgba(32, 23, 12, 0.98) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  color: var(--text-color) !important;
+}
+
+.selectize-dropdown .option:hover,
+.selectize-dropdown .option.active {
+  background: rgba(216, 92, 255, 0.16) !important;
+  color: white !important;
+}
+
+.shiny-notification {
+  background: var(--surface-strong) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 18px 42px var(--shadow-color) !important;
+  color: var(--text-color) !important;
+}
+
+@media (max-width: 991px) {
+  .app-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-items: start;
+  }
+
+  .app-visual-panel {
+    margin-top: 1rem;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .container-fluid {
+    padding: 16px !important;
+  }
+
+  .app-hero h1 {
+    font-size: 2.35rem;
+  }
+
+  .nav-tabs > li {
+    flex: 1 1 46%;
+  }
+
+  .nav-tabs > li > a {
+    text-align: center;
+  }
+}
